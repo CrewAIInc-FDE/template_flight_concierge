@@ -2,6 +2,8 @@
 
 An intelligent AI-powered travel assistant built with [crewAI](https://crewai.com) that helps users find the best flight options through a conversational interface with human feedback loops.
 
+> **Frontend UI:** This automation is designed to work with the [crewAIInc/template_flight_concierge_app](https://github.com/crewAIInc/template_flight_concierge_app) frontend application.
+
 ## Overview
 
 Flight Concierge is a CrewAI Flow application that guides users through trip planning by:
