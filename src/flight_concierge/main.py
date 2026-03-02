@@ -199,9 +199,17 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
         self.load_services()
         self.dispatcher_event_bus_service.append_message(
             Message(role="user", content=feedback_result.feedback),
+            keep_processing=True,
+        )
+
+        result = FlightConciergeAgent().confirm_booking(self.state.messages)
+        self.dispatcher_event_bus_service.append_message(
+            result.assistant_response,
             keep_processing=False,
             end_of_conversation=True,
         )
+        self.state.interactions.append(result)
+        return self.state.messages[-1].content
 
 
 def kickoff():

@@ -350,3 +350,24 @@ class FlightConciergeAgent:
         """
 
         return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
+
+    def confirm_booking(self, messages: list[Message]):
+        prompt = f"""
+        As a Senior Travel Concierge, wrap up the conversation after the user approved their flight choice.
+
+        CONVERSATION HISTORY:
+        {self._latest_messages(messages)}
+
+        YOUR TASK:
+        - Summarize which flight option the user selected
+        - Let them know that since this is a demo application, the booking won't actually
+          be processed, but in a real scenario you would proceed with booking the selected
+          flight right away on their behalf
+        - Thank them warmly for using the service
+        - Keep it friendly, professional, and in the same language as the user's messages
+
+        RETURN:
+        - assistant_response: Your closing message (3-4 sentences max)
+        """
+
+        return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
