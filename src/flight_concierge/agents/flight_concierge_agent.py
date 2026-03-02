@@ -2,9 +2,9 @@ from datetime import datetime
 
 from crewai import Agent
 from get_flight_airports_nearby import GetFlightAirportsNearby
+from get_flights_from_google_flights import GetFlightsFromGoogleFlights
 
 from flight_concierge.tools import (
-    GetFlightsFromGoogleFlights,
     QueryLocalAirportsDatabase,
     QueryLocalCitiesDatabase,
     QueryLocalCountriesDatabase,

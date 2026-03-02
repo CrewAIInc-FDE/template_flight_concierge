@@ -10,6 +10,7 @@ dependencies = [
     "get-flight-airports-nearby>=0.1.2",
     "get-flight-city-codes>=0.1.2",
     "get-flight-country-codes>=0.1.1",
+    "get-flights-from-google-flights>=0.1.2",
     "google-search-results>=2.4.2",
 ]
 
@@ -23,13 +24,13 @@ run_with_trigger = "flight_concierge.main:run_with_trigger"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
 [[tool.uv.index]]
 name = "daniel-crewai-d42c35b9"
 url = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9"
 explicit = true
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.crewai]
 type = "flow"
@@ -39,3 +40,4 @@ get-flight-country-codes = { index = "daniel-crewai-d42c35b9" }
 get-flight-city-codes = { index = "daniel-crewai-d42c35b9" }
 get-flight-airport-codes = { index = "daniel-crewai-d42c35b9" }
 get-flight-airports-nearby = { index = "daniel-crewai-d42c35b9" }
+get-flights-from-google-flights = { index = "daniel-crewai-d42c35b9" }
