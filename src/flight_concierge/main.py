@@ -136,15 +136,72 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
         return self.state.messages[-1].content
 
     @listen(booking_route)
-    def look_for_best_flights(self):
+    @human_feedback(
+        message="Please review the flight options. Do any of these work for you?",
+        emit=["flight_needs_changes", "flight_approved"],
+        llm="gpt-4.1",
+    )
+    def look_for_best_flights(
+        self, human_feedback_result
+    ) -> Literal["flight_needs_changes", "flight_approved"]:
         result = FlightConciergeAgent().look_for_best_flights(
             trip_data=self.state.trip_data,
         )
         self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=False, end_of_conversation=True
+            result.assistant_response, keep_processing=False
         )
         self.state.interactions.append(result)
+        return result.assistant_response.content
+
+    @listen("flight_needs_changes")
+    def acknowledge_flight_feedback(self, feedback_result: HumanFeedbackResult):
+        self.load_services()
+        user_message = Message(role="user", content=feedback_result.feedback)
+        self.dispatcher_event_bus_service.append_message(
+            user_message, keep_processing=True
+        )
+        self.state.trip_data.reviews.append(
+            Review(
+                agent_output=str(feedback_result.output),
+                human_feedback=feedback_result.feedback,
+                outcome=feedback_result.outcome,
+            )
+        )
+        result = FlightConciergeAgent().acknowledge_flight_feedback(
+            messages=self.state.messages,
+        )
+        self.dispatcher_event_bus_service.append_message(
+            result.assistant_response, keep_processing=True
+        )
         return self.state.messages[-1].content
+
+    @listen(acknowledge_flight_feedback)
+    @human_feedback(
+        message="Please review the updated flight options. Do these work better?",
+        emit=["flight_needs_changes", "flight_approved"],
+        llm="gpt-4.1",
+    )
+    def act_on_flight_feedback(
+        self,
+    ) -> Literal["flight_needs_changes", "flight_approved"]:
+        result = FlightConciergeAgent().act_on_flight_feedback(
+            messages=self.state.messages,
+            trip_data=self.state.trip_data,
+        )
+        self.dispatcher_event_bus_service.append_message(
+            result.assistant_response, keep_processing=False
+        )
+        self.state.interactions.append(result)
+        return result.assistant_response.content
+
+    @listen("flight_approved")
+    def confirm_booking(self, feedback_result: HumanFeedbackResult):
+        self.load_services()
+        self.dispatcher_event_bus_service.append_message(
+            Message(role="user", content=feedback_result.feedback),
+            keep_processing=False,
+            end_of_conversation=True,
+        )
 
 
 def kickoff():

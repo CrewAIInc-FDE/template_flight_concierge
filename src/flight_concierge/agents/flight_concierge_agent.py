@@ -266,11 +266,87 @@ class FlightConciergeAgent:
           * In case the legs differ in terms of departure and arrival airports,
           you should call the tool twice (once for each leg as an one-way trip each)
           * In case the legs are the same airports-wise, you should call the tool once (two-way trip)
-        - Return the best flights available
+        - Analyze all returned flights and present recommendations from TWO angles:
+
+          1. MOST CONVENIENT TIMES: Pick the top flight options that offer the best
+             departure/arrival times, shortest layovers, and lowest total travel duration.
+             Prioritize direct flights and reasonable hours.
+
+          2. MOST AFFORDABLE OPTIONS: Pick the top flight options that offer the lowest
+             price. Include the price prominently for each option.
+
+        For each recommended flight, include: airline, flight number, departure/arrival
+        times, duration, number of stops, and price.
 
         RETURN:
-        - assistant_response: Your message with the best flights available for each leg of the trip
-        written down in a friendly and professional way on the same language as the user's message.
+        - assistant_response: Your message presenting flight options organized in the two
+        sections above (Most Convenient Times and Most Affordable Options) for each leg of
+        the trip, written in a friendly and professional way in the same language as the
+        user's messages. End by asking the user to review the options and let you know
+        which they prefer or if they'd like to see different options.
+        """
+
+        return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
+
+    def acknowledge_flight_feedback(self, messages: list[Message]):
+        prompt = f"""
+        As a Senior Travel Concierge, acknowledge the user's feedback on the flight options.
+
+        USER MESSAGE:
+        {self._latest_user_message(messages).content}
+
+        YOUR TASK:
+        - Thank and acknowledge what the user just said about the flight options
+        - Let them know you will look into alternative flights based on their feedback
+        - Keep it brief, friendly, and reassuring
+        - Respond in the same language as the user's message
+
+        Return ONLY:
+        - assistant_response: Your brief acknowledgment message (1-2 sentences max)
+        """
+
+        return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
+
+    def act_on_flight_feedback(self, messages: list[Message], trip_data: TripData):
+        prompt = f"""
+        As a Senior Travel Concierge, act on the user's feedback about flight options and
+        search for better alternatives.
+
+        TRIP DATA:
+        {trip_data.model_dump_json()}
+
+        LATEST REVIEW:
+        {trip_data.reviews[-1].model_dump_json()}
+
+        CONVERSATION HISTORY:
+        {self._latest_messages(messages)}
+
+        YOUR TASK:
+        1. Analyze the user's feedback on the previously suggested flights
+        2. Use 'Find Flights' tool to search again if needed
+           - This tool can be used for round-trips and one-way trips
+             * In case the legs differ in terms of departure and arrival airports,
+             you should call the tool twice (once for each leg as an one-way trip each)
+             * In case the legs are the same airports-wise, you should call the tool once (two-way trip)
+        3. Present updated recommendations from TWO angles:
+
+           1. MOST CONVENIENT TIMES: Pick the top flight options that offer the best
+              departure/arrival times, shortest layovers, and lowest total travel duration.
+              Prioritize direct flights and reasonable hours.
+
+           2. MOST AFFORDABLE OPTIONS: Pick the top flight options that offer the lowest
+              price. Include the price prominently for each option.
+
+        4. Address the specific concerns raised in the feedback
+
+        For each recommended flight, include: airline, flight number, departure/arrival
+        times, duration, number of stops, and price.
+
+        RETURN:
+        - assistant_response: Your updated flight recommendations organized in the two
+        sections above (Most Convenient Times and Most Affordable Options) for each leg,
+        written in a friendly and professional way in the same language as the user's
+        messages. End by asking the user to review and confirm or request further changes.
         """
 
         return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
