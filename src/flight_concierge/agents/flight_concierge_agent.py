@@ -64,7 +64,7 @@ class FlightConciergeAgent:
         - Acknowledge what the user just said
         - Let them know you're processing their travel request
         - Keep it brief, friendly, and reassuring
-        - Set expectations that you'll find the best flight options
+        - Set expectations that you'll help plan the best flight itinerary
 
         Return ONLY:
         - assistant_response: Your brief acknowledgment message (1-2 sentences max)
@@ -165,12 +165,15 @@ class FlightConciergeAgent:
 
         RETURN:
         - assistant_response: A friendly, professional summary of the trip details.
-        The intent with this message is to confirm the trip details before proceeding with the
-        booking process. It is very important that in the message you highlight all details
-        split in the following sections:
+        The intent with this message is to confirm the flight itinerary before proceeding to
+        search for available flights. It is very important that in the message you highlight all
+        details split in the following sections:
             * First leg: departure and arrival details (with both city/airports along with dates)
             * Second leg: same as the first one (if applicable in case it is a round trip)
         - metadata: The complete TripData information with all known information filled
+
+        IMPORTANT: At this stage we are planning a flight itinerary, NOT booking tickets.
+        Always refer to it as a "flight itinerary" in your response.
 
         If any critical information is still missing, clearly ask for it.
         """
@@ -179,16 +182,16 @@ class FlightConciergeAgent:
 
     def acknowledge_trip_plan_feedback(self, messages: list[Message]):
         prompt = f"""
-        As a Senior Travel Concierge, acknowledge the trip plan feedback from the user.
+        As a Senior Travel Concierge, acknowledge the flight itinerary feedback from the user.
 
         USER MESSAGE:
         {self._latest_user_message(messages).content}
 
         YOUR TASK:
         - Thank and acknowledge what the user just said
-        - Let them know you will act on the feedback
+        - Let them know you will update the flight itinerary based on their feedback
         - Keep it brief, friendly, and reassuring
-        - Respond on the same language as the user's message
+        - Respond in the same language as the user's message
 
         Return ONLY:
         - assistant_response: Your brief acknowledgment message (1-2 sentences max)
@@ -198,7 +201,7 @@ class FlightConciergeAgent:
 
     def act_on_trip_plan_feedback(self, messages: list[Message], trip_data: TripData):
         prompt = f"""
-        As a Senior Travel Concierge, act on the trip plan feedback from the user.
+        As a Senior Travel Concierge, act on the flight itinerary feedback from the user.
 
         LATEST TRIP DATA:
         {trip_data.model_dump_json()}
@@ -209,7 +212,7 @@ class FlightConciergeAgent:
         YOUR TASK:
         1. Analyze the human feedback from the latest review
         2. Identify specific changes requested (dates, locations, preferences, etc.)
-        3. Update the trip data accordingly based on the feedback
+        3. Update the flight itinerary accordingly based on the feedback
         4. If the feedback requires clarification, ask follow-up questions
         5. Provide a clear response explaining what changes were made
 
@@ -222,29 +225,32 @@ class FlightConciergeAgent:
         - Preserve user preferences from previous interactions
 
         RETURN:
-        - assistant_response: A friendly, professional summary of the trip details.
-        The intent with this message is to confirm the trip details before proceeding with the
-        booking process. It is very important that in the message you highlight all details
-        split in the following sections:
+        - assistant_response: A friendly, professional summary of the updated flight itinerary.
+        The intent with this message is to confirm the flight itinerary before proceeding to
+        search for available flights. It is very important that in the message you highlight all
+        details split in the following sections:
             * First leg: departure and arrival details (with both city/airports along with dates)
             * Second leg: same as the first one (if applicable in case it is a round trip)
         - metadata: The complete TripData information with all known information filled
+
+        IMPORTANT: At this stage we are planning a flight itinerary, NOT booking tickets.
+        Always refer to it as a "flight itinerary" in your response.
         """
 
         return self._agent.kickoff(prompt.strip(), response_format=Interaction).pydantic
 
     def acknowledge_final_trip_planning_details(self, messages: list[Message]):
         prompt = f"""
-        As a Senior Travel Concierge, acknowledge the final trip planning details from the user.
+        As a Senior Travel Concierge, acknowledge the finalized flight itinerary from the user.
 
         USER MESSAGE:
         {self._latest_user_message(messages).content}
 
         YOUR TASK:
-        - Thank and acknowledge what the user just said
-        - Let them know you will start looking for the best flights available
+        - Thank and acknowledge the user's approval of the flight itinerary
+        - Let them know you will now search for the best available flights matching their itinerary
         - Keep it brief, friendly, and reassuring
-        - Respond on the same language as the user's message
+        - Respond in the same language as the user's message
 
         RETURN:
         - assistant_response: Your brief acknowledgment message (1-2 sentences max)

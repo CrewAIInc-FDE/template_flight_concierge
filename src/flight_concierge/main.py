@@ -138,12 +138,12 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
     @listen(booking_route)
     @human_feedback(
         message="Please review the flight options. Do any of these work for you?",
-        emit=["flight_needs_changes", "flight_approved"],
+        emit=["search_flights_again", "flights_selected"],
         llm="gpt-4.1",
     )
     def look_for_best_flights(
         self, human_feedback_result
-    ) -> Literal["flight_needs_changes", "flight_approved"]:
+    ) -> Literal["search_flights_again", "flights_selected"]:
         result = FlightConciergeAgent().look_for_best_flights(
             trip_data=self.state.trip_data,
         )
@@ -153,7 +153,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
         self.state.interactions.append(result)
         return result.assistant_response.content
 
-    @listen("flight_needs_changes")
+    @listen("search_flights_again")
     def acknowledge_flight_feedback(self, feedback_result: HumanFeedbackResult):
         self.load_services()
         user_message = Message(role="user", content=feedback_result.feedback)
@@ -177,13 +177,13 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
 
     @listen(acknowledge_flight_feedback)
     @human_feedback(
-        message="Please review the updated flight options. Do these work better?",
-        emit=["flight_needs_changes", "flight_approved"],
+        message="Please select which flight options you want to book or ask for other options.",
+        emit=["search_flights_again", "flights_selected"],
         llm="gpt-4.1",
     )
     def act_on_flight_feedback(
         self,
-    ) -> Literal["flight_needs_changes", "flight_approved"]:
+    ) -> Literal["search_flights_again", "flights_selected"]:
         result = FlightConciergeAgent().act_on_flight_feedback(
             messages=self.state.messages,
             trip_data=self.state.trip_data,
@@ -194,7 +194,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
         self.state.interactions.append(result)
         return result.assistant_response.content
 
-    @listen("flight_approved")
+    @listen("flights_selected")
     def confirm_booking(self, feedback_result: HumanFeedbackResult):
         self.load_services()
         self.dispatcher_event_bus_service.append_message(

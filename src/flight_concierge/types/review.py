@@ -7,5 +7,5 @@ class Review(BaseModel):
     agent_output: str
     human_feedback: str
     outcome: Literal[
-        "approved", "needs_changes", "flight_approved", "flight_needs_changes"
+        "approved", "needs_changes", "flights_selected", "search_flights_again"
     ]
