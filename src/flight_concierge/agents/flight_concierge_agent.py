@@ -204,7 +204,7 @@ class FlightConciergeAgent:
         As a Senior Travel Concierge, act on the flight itinerary feedback from the user.
 
         LATEST TRIP DATA:
-        {trip_data.model_dump_json()}
+        {trip_data.model_dump_json(include={"legs"})}
 
         LATEST REVIEW:
         {trip_data.reviews[-1].model_dump_json()}
@@ -319,7 +319,7 @@ class FlightConciergeAgent:
         search for better alternatives.
 
         TRIP DATA:
-        {trip_data.model_dump_json()}
+        {trip_data.model_dump_json(include={"legs"})}
 
         LATEST REVIEW:
         {trip_data.reviews[-1].model_dump_json()}

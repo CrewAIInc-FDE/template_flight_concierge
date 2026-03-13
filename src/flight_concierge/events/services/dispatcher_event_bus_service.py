@@ -1,19 +1,8 @@
 import os
 
-from crewai.events.event_bus import crewai_event_bus
-
-from flight_concierge.events.listeners import DispatcherEventListener
+from flight_concierge.events.clients import DispatcherClient
 from flight_concierge.events.types import UserEvent
 from flight_concierge.types import Dispatcher, Message
-
-_listener_initialized = False
-
-
-def _ensure_listener_initialized(dispatcher_data: Dispatcher):
-    global _listener_initialized
-    if not _listener_initialized:
-        DispatcherEventListener(dispatcher_data)
-        _listener_initialized = True
 
 
 class DispatcherEventBusService:
@@ -22,7 +11,6 @@ class DispatcherEventBusService:
         id: str,
         messages: list[Message] = [],
     ):
-        self._event_bus = crewai_event_bus
         self._id = id
         self._messages = messages
 
@@ -34,21 +22,28 @@ class DispatcherEventBusService:
             missing_vars.append("DISPATCHER_URL")
         if dispatcher_key is None:
             missing_vars.append("DISPATCHER_KEY")
-
         if missing_vars:
             raise ValueError(
                 f"Required environment variables are missing: {', '.join(missing_vars)}"
             )
+
         self._dispatcher_data = Dispatcher(url=dispatcher_url, key=dispatcher_key)
+        self._dispatcher_client = DispatcherClient(self._dispatcher_data)
 
-        _ensure_listener_initialized(self._dispatcher_data)
+    def append_user_message(self, message: Message):
+        self._messages.append(message)
 
-    def append_message(
-        self, message: Message, keep_processing: bool, end_of_conversation: bool = False
+    def append_assistant_feedback_message(self, message: Message):
+        self._messages.append(message)
+
+    def append_assistant_message(
+        self,
+        message: Message,
+        keep_processing: bool = True,
+        end_of_conversation: bool = False,
     ):
         self._messages.append(message)
-        self._event_bus.emit(
-            self,
+        self._dispatcher_client.dispatch(
             UserEvent(
                 result={
                     "message": message,
@@ -58,5 +53,5 @@ class DispatcherEventBusService:
                 source_fingerprint=self._id,
                 source_type="flight_concierge",
                 fingerprint_metadata={"id": self._id},
-            ),
+            ).to_json()
         )

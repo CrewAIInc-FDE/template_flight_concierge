@@ -1,49 +1,50 @@
 #!/usr/bin/env python
+import os
 from typing import Literal
 
+from arize.otel import register
 from crewai.flow import Flow, and_, human_feedback, listen, persist, start
 from crewai.flow.human_feedback import HumanFeedbackResult
+from openinference.instrumentation.crewai import CrewAIInstrumentor
+from openinference.instrumentation.openai import OpenAIInstrumentor
 
 from flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
 from flight_concierge.events.services import DispatcherEventBusService
 from flight_concierge.services import AirLabsService
 from flight_concierge.types import FlightConciergeState, Message, Review
 
+tracer_provider = register(
+    space_id=os.getenv("ARIZE_SPACE_ID"),
+    api_key=os.getenv("ARIZE_API_KEY"),
+    project_name=os.getenv("ARIZE_PROJECT_NAME"),
+)
+CrewAIInstrumentor().instrument(tracer_provider=tracer_provider)
+OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+
 
 @persist()
 class FlightConciergeFlow(Flow[FlightConciergeState]):
-    def load_services(self):
-        self.air_labs_service = AirLabsService()
-        self.dispatcher_event_bus_service = DispatcherEventBusService(
-            id=self.state.id, messages=self.state.messages
-        )
-
     @start()
     def load_initial_context(self):
-        self.load_services()
-        self.dispatcher_event_bus_service.append_message(
-            self.state.message, keep_processing=True
-        )
+        self._event_bus_service().append_user_message(self.state.message)
         return self.state.message.content
 
     @listen(load_initial_context)
     def collect_country_codes(self):
-        self.air_labs_service.ensure_countries_cached()
+        self._air_labs_service().ensure_countries_cached()
 
     @listen(load_initial_context)
     def collect_city_codes(self):
-        self.air_labs_service.ensure_cities_cached()
+        self._air_labs_service().ensure_cities_cached()
 
     @listen(load_initial_context)
     def collect_airport_codes(self):
-        self.air_labs_service.ensure_airports_cached()
+        self._air_labs_service().ensure_airports_cached()
 
     @listen(and_(collect_country_codes, collect_city_codes, collect_airport_codes))
     def acknowledge_user_message(self):
         result = FlightConciergeAgent().acknowledge_message(self.state.messages)
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=True
-        )
+        self._event_bus_service().append_assistant_message(result.assistant_response)
         return self.state.messages[-1].content
 
     @listen(acknowledge_user_message)
@@ -72,18 +73,17 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
             trip_data=self.state.trip_data,
         )
         self.state.trip_data = result.metadata
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=False
+        self._event_bus_service().append_assistant_feedback_message(
+            result.assistant_response
         )
-        self.state.interactions.append(result)
         return result.assistant_response.content
 
     @listen("needs_changes")
     def acknowledge_trip_plan_feedback(self, feedback_result: HumanFeedbackResult):
-        self.load_services()
         user_message = Message(role="user", content=feedback_result.feedback)
-        self.dispatcher_event_bus_service.append_message(
-            user_message, keep_processing=True
+        self._event_bus_service().append_user_message(user_message)
+        result = FlightConciergeAgent().acknowledge_trip_plan_feedback(
+            messages=self.state.messages,
         )
         self.state.trip_data.reviews.append(
             Review(
@@ -92,12 +92,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
                 outcome=feedback_result.outcome,
             )
         )
-        result = FlightConciergeAgent().acknowledge_trip_plan_feedback(
-            messages=self.state.messages,
-        )
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=True
-        )
+        self._event_bus_service().append_assistant_message(result.assistant_response)
         return self.state.messages[-1].content
 
     @listen(acknowledge_trip_plan_feedback)
@@ -112,27 +107,21 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
             trip_data=self.state.trip_data,
         )
         self.state.trip_data = result.metadata
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=False
+        self._event_bus_service().append_assistant_feedback_message(
+            result.assistant_response
         )
-        self.state.interactions.append(result)
         return result.assistant_response.content
 
     @listen("approved")
     def booking_route(self, feedback_result: HumanFeedbackResult):
-        self.load_services()
-        self.dispatcher_event_bus_service.append_message(
-            Message(role="user", content=feedback_result.feedback),
-            keep_processing=True,
+        self._event_bus_service().append_user_message(
+            Message(role="user", content=feedback_result.feedback)
         )
 
         result = FlightConciergeAgent().acknowledge_final_trip_planning_details(
             self.state.messages
         )
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=True
-        )
-        self.state.interactions.append(result)
+        self._event_bus_service().append_assistant_message(result.assistant_response)
         return self.state.messages[-1].content
 
     @listen(booking_route)
@@ -147,18 +136,17 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
         result = FlightConciergeAgent().look_for_best_flights(
             trip_data=self.state.trip_data,
         )
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=False
+        self._event_bus_service().append_assistant_feedback_message(
+            result.assistant_response
         )
-        self.state.interactions.append(result)
         return result.assistant_response.content
 
     @listen("search_flights_again")
     def acknowledge_flight_feedback(self, feedback_result: HumanFeedbackResult):
-        self.load_services()
         user_message = Message(role="user", content=feedback_result.feedback)
-        self.dispatcher_event_bus_service.append_message(
-            user_message, keep_processing=True
+        self._event_bus_service().append_user_message(user_message)
+        result = FlightConciergeAgent().acknowledge_flight_feedback(
+            messages=self.state.messages,
         )
         self.state.trip_data.reviews.append(
             Review(
@@ -167,12 +155,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
                 outcome=feedback_result.outcome,
             )
         )
-        result = FlightConciergeAgent().acknowledge_flight_feedback(
-            messages=self.state.messages,
-        )
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=True
-        )
+        self._event_bus_service().append_assistant_message(result.assistant_response)
         return self.state.messages[-1].content
 
     @listen(acknowledge_flight_feedback)
@@ -188,28 +171,33 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
             messages=self.state.messages,
             trip_data=self.state.trip_data,
         )
-        self.dispatcher_event_bus_service.append_message(
-            result.assistant_response, keep_processing=False
+        self._event_bus_service().append_assistant_feedback_message(
+            result.assistant_response
         )
-        self.state.interactions.append(result)
         return result.assistant_response.content
 
     @listen("flights_selected")
     def confirm_booking(self, feedback_result: HumanFeedbackResult):
-        self.load_services()
-        self.dispatcher_event_bus_service.append_message(
-            Message(role="user", content=feedback_result.feedback),
-            keep_processing=True,
+        self._event_bus_service().append_user_message(
+            Message(role="user", content=feedback_result.feedback)
         )
 
         result = FlightConciergeAgent().confirm_booking(self.state.messages)
-        self.dispatcher_event_bus_service.append_message(
+        self._event_bus_service().append_assistant_message(
             result.assistant_response,
             keep_processing=False,
             end_of_conversation=True,
         )
-        self.state.interactions.append(result)
         return self.state.messages[-1].content
+
+    def _air_labs_service(self) -> AirLabsService:
+        return AirLabsService()
+
+    def _event_bus_service(self) -> DispatcherEventBusService:
+        return DispatcherEventBusService(
+            id=self.state.id,
+            messages=self.state.messages,
+        )
 
 
 def kickoff():
