@@ -517,7 +517,7 @@ wheels = [
 
 [[package]]
 name = "crewai"
-version = "1.11.0rc1"
+version = "1.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
@@ -549,9 +549,9 @@ dependencies = [
     { name = "tomli-w" },
     { name = "uv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/dd/6b31229e6ff248928beba1a2f18fd5d00da3d359ba950219cdd6b9abaa94/crewai-1.11.0rc1.tar.gz", hash = "sha256:a9b9b6d7901af5ced17b4e43420595013c2a7b48e0c8d9ed5c525be42c8237b4", size = 7666340, upload-time = "2026-03-16T13:56:33.764Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/46/db/674584e5af2b8f7fa80820b8bf4bf6a5bdefdd1d40624fae6c13d50ded9b/crewai-1.11.0.tar.gz", hash = "sha256:055b7b64a738eec559e785c8b1aa382130d12e500577fe26a85bb248719e5592", size = 7666117, upload-time = "2026-03-18T13:39:37.914Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/84/9ff9395741f2cc2a1a8be58161407a881e7f1c719e6698f25e14f5611906/crewai-1.11.0rc1-py3-none-any.whl", hash = "sha256:2a957b8f2973038f4a96fdea2866e1c542f17e0caf95e71e7c154cf4cbe21472", size = 928964, upload-time = "2026-03-16T13:56:31.755Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/4f/cb9a332df4d0b8a7e22bbe1ff149ac0858fdcc52dd696fcd8939eace51d3/crewai-1.11.0-py3-none-any.whl", hash = "sha256:9de7c67b26d4566e525948b9179ac83c33cb93bc4bd46b526277420347b85755", size = 929253, upload-time = "2026-03-18T13:39:35.628Z" },
 ]
 
 [package.optional-dependencies]
@@ -561,7 +561,7 @@ tools = [
 
 [[package]]
 name = "crewai-tools"
-version = "1.11.0rc1"
+version = "1.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -574,9 +574,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "youtube-transcript-api" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c3/83/7a4a69b65054a9e7131689cbee1d281b386ecc8f850ae10638421655ca41/crewai_tools-1.11.0rc1.tar.gz", hash = "sha256:57bae3da061e309d52ca0f3185d04adcef1e39c7e174c4e115181f51556c90ca", size = 870225, upload-time = "2026-03-16T13:56:38.947Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c0/40/c081907f5d1a54e03290a07fc70ca380ae38c0e1c7d54231efffb56b4c8e/crewai_tools-1.11.0.tar.gz", hash = "sha256:303a1b31cee63cab2e76ccec8e0592aacda209c7c3d26033ac92ff236ee6a0b2", size = 870150, upload-time = "2026-03-18T13:39:43.825Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b2/ec/4412ef1065ea3cc740d7863bd9f6f6d902e72ad79812be71cb2805abfaff/crewai_tools-1.11.0rc1-py3-none-any.whl", hash = "sha256:78daf3c57c546fc4b7038204f21c165543c6514489fe141d32a6f813ecdc6ed2", size = 780161, upload-time = "2026-03-16T13:56:37.293Z" },
+    { url = "https://files.pythonhosted.org/packages/72/43/e45ada49c58caa521c5c0420281687094718a43e7ed7b54b25ada589dbcb/crewai_tools-1.11.0-py3-none-any.whl", hash = "sha256:b3f61e27c190d2501040ed1765196c3a77068f4fd67c53ebc72024107a299bf2", size = 780134, upload-time = "2026-03-18T13:39:42.008Z" },
 ]
 
 [[package]]
@@ -762,7 +762,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "arize-otel", specifier = ">=0.11.0" },
-    { name = "crewai", extras = ["tools"], specifier = "==1.11.0rc1" },
+    { name = "crewai", extras = ["tools"], specifier = "==1.11.0" },
     { name = "get-flight-airport-codes", specifier = ">=0.1.4", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-airports-nearby", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-city-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
