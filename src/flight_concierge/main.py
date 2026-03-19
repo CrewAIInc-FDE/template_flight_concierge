@@ -6,7 +6,7 @@ from arize.otel import register
 from crewai.flow import Flow, and_, human_feedback, listen, persist, start
 from crewai.flow.human_feedback import HumanFeedbackResult
 from openinference.instrumentation.crewai import CrewAIInstrumentor
-from openinference.instrumentation.openai import OpenAIInstrumentor
+from openinference.instrumentation.google_genai import GoogleGenAIInstrumentor
 
 from flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
 from flight_concierge.events.services import DispatcherEventBusService
@@ -19,7 +19,7 @@ tracer_provider = register(
     project_name=os.getenv("ARIZE_PROJECT_NAME"),
 )
 CrewAIInstrumentor().instrument(tracer_provider=tracer_provider)
-OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
+GoogleGenAIInstrumentor().instrument(tracer_provider=tracer_provider)
 
 
 @persist()
@@ -63,7 +63,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
     @human_feedback(
         message="Please review this trip planning details. Does it meet your needs?",
         emit=["needs_changes", "approved"],
-        llm="gpt-4.1",
+        llm="gemini/gemini-3-flash-preview",
     )
     def draft_trip_plan(
         self, human_feedback_result
@@ -99,7 +99,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
     @human_feedback(
         message="Please review the latest trip planning details. Is it better now?",
         emit=["needs_changes", "approved"],
-        llm="gpt-4.1",
+        llm="gemini/gemini-3-flash-preview",
     )
     def act_on_trip_plan_feedback(self) -> Literal["needs_changes", "approved"]:
         result = FlightConciergeAgent().act_on_trip_plan_feedback(
@@ -128,7 +128,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
     @human_feedback(
         message="Please review the flight options. Do any of these work for you?",
         emit=["search_flights_again", "flights_selected"],
-        llm="gpt-4.1",
+        llm="gemini/gemini-3-flash-preview",
     )
     def look_for_best_flights(
         self, human_feedback_result
@@ -162,7 +162,7 @@ class FlightConciergeFlow(Flow[FlightConciergeState]):
     @human_feedback(
         message="Please select which flight options you want to book or ask for other options.",
         emit=["search_flights_again", "flights_selected"],
-        llm="gpt-4.1",
+        llm="gemini/gemini-3-flash-preview",
     )
     def act_on_flight_feedback(
         self,

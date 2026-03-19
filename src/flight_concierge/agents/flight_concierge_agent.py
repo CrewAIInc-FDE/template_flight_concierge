@@ -42,7 +42,7 @@ class FlightConciergeAgent:
                 GetFlightAirportsNearby(),
                 GetFlightsFromGoogleFlights(),
             ],
-            llm="gpt-5.4-mini",
+            llm="gemini/gemini-3.1-flash-lite-preview",
         )
 
     def _latest_messages(self, messages: list[Message]):
