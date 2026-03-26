@@ -555,9 +555,6 @@ wheels = [
 ]
 
 [package.optional-dependencies]
-google-genai = [
-    { name = "google-genai" },
-]
 tools = [
     { name = "crewai-tools" },
 ]
@@ -752,27 +749,27 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "arize-otel" },
-    { name = "crewai", extra = ["google-genai", "tools"] },
+    { name = "crewai", extra = ["tools"] },
     { name = "get-flight-airport-codes" },
     { name = "get-flight-airports-nearby" },
     { name = "get-flight-city-codes" },
     { name = "get-flight-country-codes" },
     { name = "get-flights-from-google-flights" },
     { name = "openinference-instrumentation-crewai" },
-    { name = "openinference-instrumentation-google-genai" },
+    { name = "openinference-instrumentation-openai" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "arize-otel", specifier = ">=0.11.0" },
-    { name = "crewai", extras = ["google-genai", "tools"], specifier = ">=1.11.0" },
+    { name = "crewai", extras = ["tools"], specifier = ">=1.11.0" },
     { name = "get-flight-airport-codes", specifier = ">=0.1.4", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-airports-nearby", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-city-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-country-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flights-from-google-flights", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "openinference-instrumentation-crewai", specifier = ">=1.0.0" },
-    { name = "openinference-instrumentation-google-genai", specifier = ">=0.1.13" },
+    { name = "openinference-instrumentation-crewai", specifier = ">=1.1.0" },
+    { name = "openinference-instrumentation-openai", specifier = ">=0.1.43" },
 ]
 
 [[package]]
@@ -918,45 +915,6 @@ dependencies = [
     { name = "google-search-results" },
 ]
 sdist = { url = "https://app.crewai.com/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsiZGF0YSI6MjAzODg5LCJwdXIiOiJibG9iX2lkIn19--9e5bf2cae9da1e9651375ec8e104644b043699c9/get-flights-from-google-flights-0.1.3.tar.gz?disposition=attachment" }
-
-[[package]]
-name = "google-auth"
-version = "2.49.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "cryptography" },
-    { name = "pyasn1-modules" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ea/80/6a696a07d3d3b0a92488933532f03dbefa4a24ab80fb231395b9a2a1be77/google_auth-2.49.1.tar.gz", hash = "sha256:16d40da1c3c5a0533f57d268fe72e0ebb0ae1cc3b567024122651c045d879b64", size = 333825, upload-time = "2026-03-12T19:30:58.135Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/eb/c6c2478d8a8d633460be40e2a8a6f8f429171997a35a96f81d3b680dec83/google_auth-2.49.1-py3-none-any.whl", hash = "sha256:195ebe3dca18eddd1b3db5edc5189b76c13e96f29e73043b923ebcf3f1a860f7", size = 240737, upload-time = "2026-03-12T19:30:53.159Z" },
-]
-
-[package.optional-dependencies]
-requests = [
-    { name = "requests" },
-]
-
-[[package]]
-name = "google-genai"
-version = "1.65.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "distro" },
-    { name = "google-auth", extra = ["requests"] },
-    { name = "httpx" },
-    { name = "pydantic" },
-    { name = "requests" },
-    { name = "sniffio" },
-    { name = "tenacity" },
-    { name = "typing-extensions" },
-    { name = "websockets" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/79/f9/cc1191c2540d6a4e24609a586c4ed45d2db57cfef47931c139ee70e5874a/google_genai-1.65.0.tar.gz", hash = "sha256:d470eb600af802d58a79c7f13342d9ea0d05d965007cae8f76c7adff3d7a4750", size = 497206, upload-time = "2026-02-26T00:20:33.824Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/3c/3fea4e7c91357c71782d7dcaad7a2577d636c90317e003386893c25bc62c/google_genai-1.65.0-py3-none-any.whl", hash = "sha256:68c025205856919bc03edb0155c11b4b833810b7ce17ad4b7a9eeba5158f6c44", size = 724429, upload-time = "2026-02-26T00:20:32.186Z" },
-]
 
 [[package]]
 name = "google-search-results"
@@ -2041,7 +1999,7 @@ wheels = [
 
 [[package]]
 name = "openinference-instrumentation-crewai"
-version = "1.0.0"
+version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openinference-instrumentation" },
@@ -2052,14 +2010,14 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/07/27/a16f6d390668705874b18867f73b422dc362c5fded318bca43b9155231c8/openinference_instrumentation_crewai-1.0.0.tar.gz", hash = "sha256:23274532362fb6818d7118d3155c48cb5572dfa7ab44818d72c4630474dd2479", size = 14972, upload-time = "2026-03-06T17:41:20.741Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/75/2d/d7ad1666f09b8e64a0bc96b69339d7b236218c5a2d554ccbba3dc0a79aef/openinference_instrumentation_crewai-1.1.0.tar.gz", hash = "sha256:8e5dd6016a9c431b5c7fc4fedaec4bcbdd5858857ba2e118903372babf638849", size = 24577, upload-time = "2026-03-23T21:31:31.483Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cb/43/d63e233adf995c2f2eb43a8f9c16cc67b2ef9ad7cf18dbb7208091fb90b9/openinference_instrumentation_crewai-1.0.0-py3-none-any.whl", hash = "sha256:d2ab9f4e3e3e3c2df707ced5f26e3dbd9cc99766b27d8b7946539a3b7ac6b3a7", size = 16669, upload-time = "2026-03-06T17:41:19.791Z" },
+    { url = "https://files.pythonhosted.org/packages/59/db/66e894e5457026c00fc69fa5242bc5e94bdb8e364d77dc326765bfb5a16a/openinference_instrumentation_crewai-1.1.0-py3-none-any.whl", hash = "sha256:08d8fd7bae42804c094ed51e2db30aa189897d7e9c8ae06ce6803ebe747c6cec", size = 27543, upload-time = "2026-03-23T21:31:30.346Z" },
 ]
 
 [[package]]
-name = "openinference-instrumentation-google-genai"
-version = "0.1.13"
+name = "openinference-instrumentation-openai"
+version = "0.1.43"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openinference-instrumentation" },
@@ -2067,11 +2025,12 @@ dependencies = [
     { name = "opentelemetry-api" },
     { name = "opentelemetry-instrumentation" },
     { name = "opentelemetry-semantic-conventions" },
+    { name = "typing-extensions" },
     { name = "wrapt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/b0/91785c0d8740c488c7d9c0789985cccafbd4dad53266242a19d511603feb/openinference_instrumentation_google_genai-0.1.13.tar.gz", hash = "sha256:088a7300264486a41db2ab44b08848aaac788d0b6a3d61ff12d66b9b3b0703fb", size = 55136, upload-time = "2026-03-11T04:45:48.223Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/41/9c524841fc2823ec15a58a4e2c6cdbda500cef1d8a3c447060388acfa8dd/openinference_instrumentation_openai-0.1.43.tar.gz", hash = "sha256:66ceb5459d5d7eb76f91e679c8993df5f2e09fcb1f8ff7e6465a1402f9201ac6", size = 23345, upload-time = "2026-03-24T18:23:24.307Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/38/9c5f8ff01cce2e93b92abd6779c6d5bad8ddc399d26a5debc7ed9a32782c/openinference_instrumentation_google_genai-0.1.13-py3-none-any.whl", hash = "sha256:b14485015a4603accba17f77636501b68bc163e95bc9cf65ffb64caf60544cfc", size = 29135, upload-time = "2026-03-11T04:45:45.471Z" },
+    { url = "https://files.pythonhosted.org/packages/63/91/b3528285e2d345d4abfd23386b316445bc0db061c8f941b142dd484d2f16/openinference_instrumentation_openai-0.1.43-py3-none-any.whl", hash = "sha256:9b8e5f69f811386cb116a8064069364d50f78b6528561494f145a334fff3df7c", size = 30862, upload-time = "2026-03-24T18:23:23.42Z" },
 ]
 
 [[package]]
@@ -2599,27 +2558,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/84/a7/90007d476b9f0dc308e3bc57b832d004f848fd6c0da601375d20d92d1519/pyarrow-23.0.1-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:c2139549494445609f35a5cda4eb94e2c9e4d704ce60a095b342f82460c73a83", size = 48236269, upload-time = "2026-02-16T10:12:04.47Z" },
     { url = "https://files.pythonhosted.org/packages/b0/3f/b16fab3e77709856eb6ac328ce35f57a6d4a18462c7ca5186ef31b45e0e0/pyarrow-23.0.1-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:7044b442f184d84e2351e5084600f0d7343d6117aabcbc1ac78eb1ae11eb4125", size = 50604794, upload-time = "2026-02-16T10:12:11.797Z" },
     { url = "https://files.pythonhosted.org/packages/e9/a1/22df0620a9fac31d68397a75465c344e83c3dfe521f7612aea33e27ab6c0/pyarrow-23.0.1-cp313-cp313t-win_amd64.whl", hash = "sha256:a35581e856a2fafa12f3f54fce4331862b1cfb0bef5758347a858a4aa9d6bae8", size = 27660642, upload-time = "2026-02-16T10:12:17.746Z" },
-]
-
-[[package]]
-name = "pyasn1"
-version = "0.6.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/5c/5f/6583902b6f79b399c9c40674ac384fd9cd77805f9e6205075f828ef11fb2/pyasn1-0.6.3.tar.gz", hash = "sha256:697a8ecd6d98891189184ca1fa05d1bb00e2f84b5977c481452050549c8a72cf", size = 148685, upload-time = "2026-03-17T01:06:53.382Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/a0/7d793dce3fa811fe047d6ae2431c672364b462850c6235ae306c0efd025f/pyasn1-0.6.3-py3-none-any.whl", hash = "sha256:a80184d120f0864a52a073acc6fc642847d0be408e7c7252f31390c0f4eadcde", size = 83997, upload-time = "2026-03-17T01:06:52.036Z" },
-]
-
-[[package]]
-name = "pyasn1-modules"
-version = "0.4.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyasn1" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e9/e6/78ebbb10a8c8e4b61a59249394a4a594c1a7af95593dc933a349c8d00964/pyasn1_modules-0.4.2.tar.gz", hash = "sha256:677091de870a80aae844b1ca6134f54652fa2c8c5a52aa396440ac3106e941e6", size = 307892, upload-time = "2025-03-28T02:41:22.17Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/8d/d529b5d697919ba8c11ad626e835d4039be708a35b0d22de83a269a6682c/pyasn1_modules-0.4.2-py3-none-any.whl", hash = "sha256:29253a9207ce32b64c3ac6600edc75368f98473906e8fd1043bd6b5b1de2c14a", size = 181259, upload-time = "2025-03-28T02:41:19.028Z" },
 ]
 
 [[package]]
