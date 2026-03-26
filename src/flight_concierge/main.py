@@ -19,7 +19,7 @@ tracer_provider = register(
     project_name=os.getenv("ARIZE_PROJECT_NAME"),
 )
 CrewAIInstrumentor().instrument(
-    tracer_provider=tracer_provider, use_event_listener=True
+    tracer_provider=tracer_provider, use_event_listener=True, create_llm_spans=False
 )
 OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
 
