@@ -10,7 +10,7 @@ from openinference.instrumentation.crewai import CrewAIInstrumentor
 from flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
 from flight_concierge.events.services import DispatcherEventBusService
 from flight_concierge.services import AirLabsService
-from flight_concierge.types import FlightConciergeState, Message, Review, TripData
+from flight_concierge.types import FlightConciergeState, Message, Review
 
 tracer_provider = register(
     space_id=os.getenv("ARIZE_SPACE_ID"),
@@ -26,8 +26,6 @@ CrewAIInstrumentor().instrument(
 class FlightConciergeFlow(Flow[FlightConciergeState]):
     @start()
     def load_initial_context(self):
-        if self.state.trip_data is None:
-            self.state.trip_data = TripData()
         self._event_bus_service().append_user_message(self.state.message)
         return self.state.message.content
 
