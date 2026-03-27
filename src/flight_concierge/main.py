@@ -6,7 +6,6 @@ from arize.otel import register
 from crewai.flow import Flow, and_, human_feedback, listen, persist, start
 from crewai.flow.human_feedback import HumanFeedbackResult
 from openinference.instrumentation.crewai import CrewAIInstrumentor
-from openinference.instrumentation.openai import OpenAIInstrumentor
 
 from flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
 from flight_concierge.events.services import DispatcherEventBusService
@@ -21,7 +20,6 @@ tracer_provider = register(
 CrewAIInstrumentor().instrument(
     tracer_provider=tracer_provider, use_event_listener=True
 )
-OpenAIInstrumentor().instrument(tracer_provider=tracer_provider)
 
 
 @persist()

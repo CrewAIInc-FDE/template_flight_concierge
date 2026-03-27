@@ -756,7 +756,6 @@ dependencies = [
     { name = "get-flight-country-codes" },
     { name = "get-flights-from-google-flights" },
     { name = "openinference-instrumentation-crewai" },
-    { name = "openinference-instrumentation-openai" },
 ]
 
 [package.metadata]
@@ -769,7 +768,6 @@ requires-dist = [
     { name = "get-flight-country-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flights-from-google-flights", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "openinference-instrumentation-crewai", specifier = ">=1.1.0" },
-    { name = "openinference-instrumentation-openai", specifier = ">=0.1.43" },
 ]
 
 [[package]]
@@ -2013,24 +2011,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/75/2d/d7ad1666f09b8e64a0bc96b69339d7b236218c5a2d554ccbba3dc0a79aef/openinference_instrumentation_crewai-1.1.0.tar.gz", hash = "sha256:8e5dd6016a9c431b5c7fc4fedaec4bcbdd5858857ba2e118903372babf638849", size = 24577, upload-time = "2026-03-23T21:31:31.483Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/59/db/66e894e5457026c00fc69fa5242bc5e94bdb8e364d77dc326765bfb5a16a/openinference_instrumentation_crewai-1.1.0-py3-none-any.whl", hash = "sha256:08d8fd7bae42804c094ed51e2db30aa189897d7e9c8ae06ce6803ebe747c6cec", size = 27543, upload-time = "2026-03-23T21:31:30.346Z" },
-]
-
-[[package]]
-name = "openinference-instrumentation-openai"
-version = "0.1.43"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "openinference-instrumentation" },
-    { name = "openinference-semantic-conventions" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-instrumentation" },
-    { name = "opentelemetry-semantic-conventions" },
-    { name = "typing-extensions" },
-    { name = "wrapt" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/41/9c524841fc2823ec15a58a4e2c6cdbda500cef1d8a3c447060388acfa8dd/openinference_instrumentation_openai-0.1.43.tar.gz", hash = "sha256:66ceb5459d5d7eb76f91e679c8993df5f2e09fcb1f8ff7e6465a1402f9201ac6", size = 23345, upload-time = "2026-03-24T18:23:24.307Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/63/91/b3528285e2d345d4abfd23386b316445bc0db061c8f941b142dd484d2f16/openinference_instrumentation_openai-0.1.43-py3-none-any.whl", hash = "sha256:9b8e5f69f811386cb116a8064069364d50f78b6528561494f145a334fff3df7c", size = 30862, upload-time = "2026-03-24T18:23:23.42Z" },
 ]
 
 [[package]]
