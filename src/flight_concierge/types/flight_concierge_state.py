@@ -9,5 +9,5 @@ class FlightConciergeState(BaseModel):
     message: Message | None = None
 
     # processing
-    trip_data: TripData = TripData()
+    trip_data: TripData | None = None
     messages: list[Message] = []
