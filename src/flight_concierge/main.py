@@ -17,9 +17,7 @@ tracer_provider = register(
     api_key=os.getenv("ARIZE_API_KEY"),
     project_name=os.getenv("ARIZE_PROJECT_NAME"),
 )
-CrewAIInstrumentor().instrument(
-    tracer_provider=tracer_provider, use_event_listener=True
-)
+CrewAIInstrumentor().instrument(tracer_provider=tracer_provider)
 
 
 @persist()
