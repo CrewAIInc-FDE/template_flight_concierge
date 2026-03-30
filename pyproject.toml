@@ -13,6 +13,7 @@ dependencies = [
     "get-flight-country-codes>=0.1.3",
     "get-flights-from-google-flights>=0.1.3",
     "openinference-instrumentation-crewai>=1.1.0",
+    "openinference-instrumentation-openai>=0.1.43",
 ]
 
 [project.scripts]
