@@ -517,7 +517,7 @@ wheels = [
 
 [[package]]
 name = "crewai"
-version = "1.14.3"
+version = "1.14.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -525,6 +525,8 @@ dependencies = [
     { name = "appdirs" },
     { name = "chromadb" },
     { name = "click" },
+    { name = "crewai-cli" },
+    { name = "crewai-core" },
     { name = "httpx" },
     { name = "instructor" },
     { name = "json-repair" },
@@ -545,15 +547,13 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "regex" },
-    { name = "textual" },
     { name = "tokenizers" },
     { name = "tomli" },
     { name = "tomli-w" },
-    { name = "uv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c0/8c/cab4ecb440cd0cb07167aae18a066a7592d8d2d21d0607ed06a6fe224c03/crewai-1.14.3.tar.gz", hash = "sha256:8a7c403ac4ba48e24d5194255f8b638849cc395e7d5534ccef7d158ea45e963a", size = 7843453, upload-time = "2026-04-24T16:14:30.433Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/26/12/b974c1b36af1d4a5928825f6ac7f7d34fc88b12e4715dcb43e119157663d/crewai-1.14.5.tar.gz", hash = "sha256:e64dfa4f309f94bbaacab0a4ca5d4f8e02b18c528b2876a390cd396135d46631", size = 7681243, upload-time = "2026-05-18T19:20:43.604Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e7/64/05399271dcfb3f94e3439719f19160e62e9dad72dc0489d012c0dab69aa3/crewai-1.14.3-py3-none-any.whl", hash = "sha256:76b17a06428a3db6247552547c1438823a43665f0ba1cf51fc1eec447cd3221a", size = 1075827, upload-time = "2026-04-24T16:14:28.441Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/5c/c274c1657d164ef170b70ee725e1b6164062440b8b47a96a104d12f5245c/crewai-1.14.5-py3-none-any.whl", hash = "sha256:be6580aab9d5ee2c73de5ed26cdd29c7d04d826e0d14e0a5ddd2e1e0742fa9f8", size = 976841, upload-time = "2026-05-18T19:20:41.437Z" },
 ]
 
 [package.optional-dependencies]
@@ -562,8 +562,58 @@ tools = [
 ]
 
 [[package]]
+name = "crewai-cli"
+version = "1.14.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "appdirs" },
+    { name = "certifi" },
+    { name = "click" },
+    { name = "crewai-core" },
+    { name = "cryptography" },
+    { name = "httpx" },
+    { name = "packaging" },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "pyjwt" },
+    { name = "python-dotenv" },
+    { name = "rich" },
+    { name = "textual" },
+    { name = "tomli" },
+    { name = "tomli-w" },
+    { name = "uv" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/00/e2/5fec7c86f561be3cf6a1766939e4e6dc8592213fd1f3a3c2228f53cbf644/crewai_cli-1.14.5.tar.gz", hash = "sha256:faf05a8ce8ba655f49a1fc61473efc439a9ad70ce0329a768de265243726e0f0", size = 107149, upload-time = "2026-05-18T19:20:46.521Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/3e/a8e66982d3b5a9e98ccd66cd4516c184a37f94ccb2320e7ae1d3969ed9ac/crewai_cli-1.14.5-py3-none-any.whl", hash = "sha256:0e4811a093a95a9c7a177abfdac6cb90af806cf0850efddc42072739e0bdcac9", size = 108319, upload-time = "2026-05-18T19:20:45.436Z" },
+]
+
+[[package]]
+name = "crewai-core"
+version = "1.14.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "appdirs" },
+    { name = "cryptography" },
+    { name = "httpx" },
+    { name = "opentelemetry-api" },
+    { name = "opentelemetry-exporter-otlp-proto-http" },
+    { name = "opentelemetry-sdk" },
+    { name = "packaging" },
+    { name = "portalocker" },
+    { name = "pydantic" },
+    { name = "pyjwt" },
+    { name = "rich" },
+    { name = "tomli" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/28/1a/b3ce01f4d4b7773dbd2aa21bdda9d4d3d11778dde3e6b6f4a690f5cd89f8/crewai_core-1.14.5.tar.gz", hash = "sha256:b72c0cfb953bf934b252fa826cb71c80127ccc42f9a39feb2a7a97ee8272be82", size = 19168, upload-time = "2026-05-18T19:20:48.271Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f5/52/05da585bdc287c7d9b368e6f58bf23d01a2bf20ba953370119e8cdc2d3ea/crewai_core-1.14.5-py3-none-any.whl", hash = "sha256:f2349160d10345e9096660c78ed6c5a6a9922033cd4c5e1b18dcbf8ea72a48b3", size = 27385, upload-time = "2026-05-18T19:20:47.325Z" },
+]
+
+[[package]]
 name = "crewai-tools"
-version = "1.14.3"
+version = "1.14.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -575,9 +625,9 @@ dependencies = [
     { name = "tiktoken" },
     { name = "youtube-transcript-api" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/48/2b/4c129acd8dedc93d962c250745c4d76c91bd4e023a1ea4a9469ab6102d89/crewai_tools-1.14.3.tar.gz", hash = "sha256:d907be86a5a8de870c0d501cfe0c10058d9689349e51090a6e450982fbc4bef7", size = 894107, upload-time = "2026-04-24T16:14:36.434Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/70/be/a1d068a8cd416b0be3cb649fb9c960b7bb8501a17e903614ce35949e8a53/crewai_tools-1.14.5.tar.gz", hash = "sha256:eacf3e719eadf91607c3103dbd42ff5dcf149e64801f97c50c6904f356c7efd2", size = 900866, upload-time = "2026-05-18T19:20:53.706Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/f0/936c1bf2558739af5b3fede8f435082e8d487122f677feedbb598bd01645/crewai_tools-1.14.3-py3-none-any.whl", hash = "sha256:b6bafdccdd039fcc3be15732489d6f2da546c2f2c0e20a1b181e22e6c15f904a", size = 804226, upload-time = "2026-04-24T16:14:34.752Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/08/6d838e6f9476b18f5db61c20dff7054dcb1fa97aadbf43c6bc88bb3f8903/crewai_tools-1.14.5-py3-none-any.whl", hash = "sha256:e17b0bbc2dbc3b0e98b87d797964c603ae13293a8c7a936faf40a9e117563eb1", size = 814053, upload-time = "2026-05-18T19:20:51.95Z" },
 ]
 
 [[package]]
@@ -731,7 +781,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "arize-otel", specifier = ">=0.11.0" },
-    { name = "crewai", extras = ["tools"], specifier = "==1.14.3" },
+    { name = "crewai", extras = ["tools"], specifier = "==1.14.5" },
     { name = "get-flight-airport-codes", specifier = ">=0.1.4", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-airports-nearby", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
     { name = "get-flight-city-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
