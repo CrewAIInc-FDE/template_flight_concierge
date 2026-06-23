@@ -109,9 +109,9 @@ def api_start():
                 "webhooks": {
                     "events": [
                         "flow_started",
+                        "flow_finished",
                         "human_feedback_requested",
                         "human_feedback_received",
-                        "flow_finished",
                     ],
                     "url": f"{_public_base_url()}/webhook/messages",
                     "realtime": True,
@@ -123,7 +123,11 @@ def api_start():
             },
             timeout=30,
         )
-        resp.raise_for_status()
+        if not resp.ok:
+            app.logger.error(
+                "Kickoff HTTP %s: %s", resp.status_code, resp.text[:500]
+            )
+            resp.raise_for_status()
     except http_requests.RequestException as exc:
         app.logger.error("Kickoff request failed: %s", exc)
         return jsonify({"error": "Failed to start conversation"}), 502
