@@ -1,8 +1,8 @@
 import os
 
-from flight_concierge.events.clients import DispatcherClient
-from flight_concierge.events.types import UserEvent
-from flight_concierge.types import Dispatcher, Message
+from template_flight_concierge.events.clients import DispatcherClient
+from template_flight_concierge.events.types import UserEvent
+from template_flight_concierge.types import Dispatcher, Message
 
 
 class DispatcherEventBusService:

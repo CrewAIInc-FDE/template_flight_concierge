@@ -8,10 +8,10 @@ from crewai.flow.human_feedback import HumanFeedbackResult
 from openinference.instrumentation.crewai import CrewAIInstrumentor
 from openinference.instrumentation.openai import OpenAIInstrumentor
 
-from flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
-from flight_concierge.events.services import DispatcherEventBusService
-from flight_concierge.services import AirLabsService
-from flight_concierge.types import FlightConciergeState, Message, Review
+from template_flight_concierge.agents.flight_concierge_agent import FlightConciergeAgent
+from template_flight_concierge.events.services import DispatcherEventBusService
+from template_flight_concierge.services import AirLabsService
+from template_flight_concierge.types import FlightConciergeState, Message, Review
 
 tracer_provider = register(
     space_id=os.getenv("ARIZE_SPACE_ID"),

@@ -1,5 +1,8 @@
 .env
+frontend/.env
 __pycache__/
+.venv/
+frontend/.venv/
 lib/
 .DS_Store
 db/

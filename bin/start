@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+FRONTEND_DIR="$ROOT_DIR/frontend"
+UI_DIR="$FRONTEND_DIR/template_flight_concierge_ui"
+
+# ── Load .env ─────────────────────────────────────────────────────────────────
+# bin/start only runs the Flask UI + ngrok (the crew runs on AMP), so we load the
+# frontend env file here. The UI's app.py also loads frontend/.env via load_dotenv.
+if [[ -f "$FRONTEND_DIR/.env" ]]; then
+  set -a
+  source "$FRONTEND_DIR/.env"
+  set +a
+fi
+
+NGROK_DOMAIN="${NGROK_DOMAIN:-}"
+PORT="${PORT:-5001}"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --ngrok-domain) NGROK_DOMAIN="$2"; shift 2 ;;
+    --port)         PORT="$2"; shift 2 ;;
+    *)              echo "Unknown flag: $1"; exit 1 ;;
+  esac
+done
+
+if [[ -z "$NGROK_DOMAIN" ]]; then
+  echo "ERROR: NGROK_DOMAIN is not set. Add it to frontend/.env or pass --ngrok-domain."
+  exit 1
+fi
+
+FLASK_PID=""
+NGROK_PID=""
+
+cleanup() {
+  echo ""
+  echo "Shutting down..."
+  [[ -n "$FLASK_PID" ]] && kill "$FLASK_PID" 2>/dev/null || true
+  [[ -n "$NGROK_PID" ]] && kill "$NGROK_PID" 2>/dev/null || true
+  wait 2>/dev/null || true
+  echo "Done."
+}
+trap cleanup EXIT INT TERM
+
+# ── Dependencies via uv ──────────────────────────────────────────────────────
+# The UI is a standalone Flask app (it talks to the AMP deployment over HTTP),
+# so we only install the frontend's deps here — not the backend/crew packages.
+echo "Installing dependencies..."
+uv pip install -q -e "$FRONTEND_DIR" --python "$(which python3)"
+
+# ── Start Flask ──────────────────────────────────────────────────────────────
+echo "Starting Flask on port $PORT..."
+PORT="$PORT" python3 "$UI_DIR/app.py" 2>&1 &
+FLASK_PID=$!
+sleep 2
+
+if ! kill -0 "$FLASK_PID" 2>/dev/null; then
+  echo "ERROR: Flask failed to start."
+  exit 1
+fi
+
+# ── Start ngrok ──────────────────────────────────────────────────────────────
+echo "Starting ngrok tunnel → https://$NGROK_DOMAIN ..."
+ngrok http "$PORT" --url "$NGROK_DOMAIN" --log stdout --log-level warn > /dev/null 2>&1 &
+NGROK_PID=$!
+sleep 2
+
+echo ""
+echo "════════════════════════════════════════════════════════════"
+echo "  Local:  http://localhost:$PORT"
+echo "  Public: https://$NGROK_DOMAIN"
+echo ""
+echo "  Webhook endpoint: https://$NGROK_DOMAIN/webhook/messages"
+echo "════════════════════════════════════════════════════════════"
+echo ""
+echo "Press Ctrl+C to stop."
+
+wait

@@ -1,6 +1,6 @@
 import requests
 
-from flight_concierge.types import Dispatcher
+from template_flight_concierge.types import Dispatcher
 
 
 class DispatcherClient:

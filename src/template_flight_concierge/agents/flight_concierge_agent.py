@@ -4,18 +4,18 @@ from crewai import Agent
 from get_flight_airports_nearby import GetFlightAirportsNearby
 from get_flights_from_google_flights import GetFlightsFromGoogleFlights
 
-from flight_concierge.tools import (
+from template_flight_concierge.tools import (
     QueryLocalAirportsDatabase,
     QueryLocalCitiesDatabase,
     QueryLocalCountriesDatabase,
 )
-from flight_concierge.types import (
+from template_flight_concierge.types import (
     ArrivalData,
     DepartureData,
     Interaction,
     TripData,
 )
-from flight_concierge.types.message import Message
+from template_flight_concierge.types.message import Message
 
 
 class FlightConciergeAgent:

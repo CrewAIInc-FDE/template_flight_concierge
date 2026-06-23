@@ -763,35 +763,6 @@ wheels = [
 ]
 
 [[package]]
-name = "flight-concierge"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "arize-otel" },
-    { name = "crewai", extra = ["tools"] },
-    { name = "get-flight-airport-codes" },
-    { name = "get-flight-airports-nearby" },
-    { name = "get-flight-city-codes" },
-    { name = "get-flight-country-codes" },
-    { name = "get-flights-from-google-flights" },
-    { name = "openinference-instrumentation-crewai" },
-    { name = "openinference-instrumentation-openai" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "arize-otel", specifier = ">=0.11.0" },
-    { name = "crewai", extras = ["tools"], specifier = "==1.14.5" },
-    { name = "get-flight-airport-codes", specifier = ">=0.1.4", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "get-flight-airports-nearby", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "get-flight-city-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "get-flight-country-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "get-flights-from-google-flights", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
-    { name = "openinference-instrumentation-crewai", specifier = ">=1.1.0" },
-    { name = "openinference-instrumentation-openai", specifier = ">=0.1.43" },
-]
-
-[[package]]
 name = "frozenlist"
 version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3315,6 +3286,35 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/83/d3/803453b36afefb7c2bb238361cd4ae6125a569b4db67cd9e79846ba2d68c/sympy-1.14.0.tar.gz", hash = "sha256:d3d3fe8df1e5a0b42f0e7bdf50541697dbe7d23746e894990c030e2b05e72517", size = 7793921, upload-time = "2025-04-27T18:05:01.611Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl", hash = "sha256:e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5", size = 6299353, upload-time = "2025-04-27T18:04:59.103Z" },
+]
+
+[[package]]
+name = "template-flight-concierge"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "arize-otel" },
+    { name = "crewai", extra = ["tools"] },
+    { name = "get-flight-airport-codes" },
+    { name = "get-flight-airports-nearby" },
+    { name = "get-flight-city-codes" },
+    { name = "get-flight-country-codes" },
+    { name = "get-flights-from-google-flights" },
+    { name = "openinference-instrumentation-crewai" },
+    { name = "openinference-instrumentation-openai" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "arize-otel", specifier = ">=0.11.0" },
+    { name = "crewai", extras = ["tools"], specifier = "==1.14.5" },
+    { name = "get-flight-airport-codes", specifier = ">=0.1.4", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
+    { name = "get-flight-airports-nearby", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
+    { name = "get-flight-city-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
+    { name = "get-flight-country-codes", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
+    { name = "get-flights-from-google-flights", specifier = ">=0.1.3", index = "https://app.crewai.com/pypi/daniel-crewai-d42c35b9" },
+    { name = "openinference-instrumentation-crewai", specifier = ">=1.1.0" },
+    { name = "openinference-instrumentation-openai", specifier = ">=0.1.43" },
 ]
 
 [[package]]
