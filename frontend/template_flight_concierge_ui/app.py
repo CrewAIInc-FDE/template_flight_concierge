@@ -50,6 +50,7 @@ def _verify_crewai_signature() -> bool:
         "ts.body":   f"{timestamp}.".encode() + body,
         "body.ts":   body + f".{timestamp}".encode(),
     }
+    app.logger.info("Signature debug: body=%s", body[:500])
     for label, msg in candidates.items():
         computed = hmac.new(_WEBHOOK_SECRET, msg, hashlib.sha256).hexdigest()
         app.logger.info("Signature [%s]: computed=%s expected=%s match=%s", label, computed, expected_sig, computed == expected_sig)
