@@ -20,9 +20,6 @@ CREWAI_ENTERPRISE_TOKEN = os.environ["CREWAI_ENTERPRISE_TOKEN"]
 WEBHOOK_TOKEN = os.environ["WEBHOOK_TOKEN"]
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
 
-# Decode the webhook secret: strip "whsec_" prefix and interpret remainder as hex bytes.
-_WEBHOOK_SECRET = bytes.fromhex(WEBHOOK_TOKEN.removeprefix("whsec_"))
-
 sessions: dict[str, dict] = {}
 sessions_lock = Lock()
 
@@ -35,28 +32,28 @@ sse_clients_lock = Lock()
 
 
 def _verify_crewai_signature() -> bool:
-    """Verify the X-Crewai-Signature HMAC-SHA256 signature AMP sends on HITL webhooks."""
-    sig_header = request.headers.get("X-Crewai-Signature", "")
-    timestamp = request.headers.get("X-Crewai-Timestamp", "")
+    """Verify the HMAC-SHA256 signature AMP sends on HITL webhook calls.
+    Formula (from docs): HMAC-SHA256(secret, f"{timestamp}.{body_str}")
+    Headers may be X-Signature/X-Timestamp or X-Crewai-Signature/X-Crewai-Timestamp."""
+    sig_header = request.headers.get("X-Crewai-Signature") or request.headers.get(
+        "X-Signature", ""
+    )
+    timestamp = request.headers.get("X-Crewai-Timestamp") or request.headers.get(
+        "X-Timestamp", ""
+    )
     if not sig_header or not timestamp:
-        app.logger.warning("Signature verification: missing headers sig=%r ts=%r", sig_header, timestamp)
+        app.logger.warning(
+            "HITL signature: missing headers sig=%r ts=%r", sig_header, timestamp
+        )
         return False
     expected_sig = sig_header.removeprefix("sha256=")
-    body = request.get_data()
-
-    # Try both candidate signed-message formats and log which (if any) matches.
-    candidates = {
-        "body_only": body,
-        "ts.body":   f"{timestamp}.".encode() + body,
-        "body.ts":   body + f".{timestamp}".encode(),
-    }
-    app.logger.info("Signature debug: ts=%s sig=%s body_hex=%s", timestamp, expected_sig, body.hex())
-    for label, msg in candidates.items():
-        computed = hmac.new(_WEBHOOK_SECRET, msg, hashlib.sha256).hexdigest()
-        app.logger.info("Signature [%s]: computed=%s expected=%s match=%s", label, computed, expected_sig, computed == expected_sig)
-        if hmac.compare_digest(computed, expected_sig):
-            return True
-    return False
+    payload = request.get_data().decode("utf-8")
+    computed = hmac.new(
+        WEBHOOK_TOKEN.encode(),
+        f"{timestamp}.{payload}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(computed, expected_sig)
 
 
 def _public_base_url() -> str:
