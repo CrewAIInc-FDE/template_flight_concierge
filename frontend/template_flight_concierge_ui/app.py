@@ -1,3 +1,5 @@
+import hashlib
+import hmac
 import json
 import logging
 import os
@@ -18,6 +20,9 @@ CREWAI_ENTERPRISE_TOKEN = os.environ["CREWAI_ENTERPRISE_TOKEN"]
 WEBHOOK_TOKEN = os.environ["WEBHOOK_TOKEN"]
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
 
+# Decode the webhook secret: strip "whsec_" prefix and interpret remainder as hex bytes.
+_WEBHOOK_SECRET = bytes.fromhex(WEBHOOK_TOKEN.removeprefix("whsec_"))
+
 sessions: dict[str, dict] = {}
 sessions_lock = Lock()
 
@@ -27,6 +32,20 @@ sse_clients_lock = Lock()
 # ──────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────
+
+
+def _verify_crewai_signature() -> bool:
+    """Verify the X-Crewai-Signature HMAC-SHA256 signature AMP sends on HITL webhooks.
+    Signed message is '{timestamp}.{raw_body}', secret is the hex-decoded webhook secret."""
+    sig_header = request.headers.get("X-Crewai-Signature", "")
+    timestamp = request.headers.get("X-Crewai-Timestamp", "")
+    if not sig_header or not timestamp:
+        return False
+    expected_sig = sig_header.removeprefix("sha256=")
+    body = request.get_data()
+    signed_content = f"{timestamp}.".encode() + body
+    computed = hmac.new(_WEBHOOK_SECRET, signed_content, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(computed, expected_sig)
 
 
 def _public_base_url() -> str:
@@ -126,9 +145,7 @@ def api_start():
             timeout=30,
         )
         if not resp.ok:
-            app.logger.error(
-                "Kickoff HTTP %s: %s", resp.status_code, resp.text[:500]
-            )
+            app.logger.error("Kickoff HTTP %s: %s", resp.status_code, resp.text[:500])
             resp.raise_for_status()
     except http_requests.RequestException as exc:
         app.logger.error("Kickoff request failed: %s", exc)
@@ -291,10 +308,9 @@ def webhook_messages():
 @app.route("/webhook/feedback", methods=["POST"])
 def webhook_feedback():
     """Receive human feedback requests from CrewAI Enterprise automation."""
-    app.logger.info(
-        "Feedback webhook headers: %s",
-        dict(request.headers),
-    )
+    if not _verify_crewai_signature():
+        return jsonify({"error": "unauthorized"}), 401
+
     payload = request.get_json(force=True)
     app.logger.info(
         "Feedback webhook: payload=%.200s", json.dumps(payload, default=str)
