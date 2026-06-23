@@ -35,17 +35,27 @@ sse_clients_lock = Lock()
 
 
 def _verify_crewai_signature() -> bool:
-    """Verify the X-Crewai-Signature HMAC-SHA256 signature AMP sends on HITL webhooks.
-    Signed message is '{timestamp}.{raw_body}', secret is the hex-decoded webhook secret."""
+    """Verify the X-Crewai-Signature HMAC-SHA256 signature AMP sends on HITL webhooks."""
     sig_header = request.headers.get("X-Crewai-Signature", "")
     timestamp = request.headers.get("X-Crewai-Timestamp", "")
     if not sig_header or not timestamp:
+        app.logger.warning("Signature verification: missing headers sig=%r ts=%r", sig_header, timestamp)
         return False
     expected_sig = sig_header.removeprefix("sha256=")
     body = request.get_data()
-    signed_content = f"{timestamp}.".encode() + body
-    computed = hmac.new(_WEBHOOK_SECRET, signed_content, hashlib.sha256).hexdigest()
-    return hmac.compare_digest(computed, expected_sig)
+
+    # Try both candidate signed-message formats and log which (if any) matches.
+    candidates = {
+        "body_only": body,
+        "ts.body":   f"{timestamp}.".encode() + body,
+        "body.ts":   body + f".{timestamp}".encode(),
+    }
+    for label, msg in candidates.items():
+        computed = hmac.new(_WEBHOOK_SECRET, msg, hashlib.sha256).hexdigest()
+        app.logger.info("Signature [%s]: computed=%s expected=%s match=%s", label, computed, expected_sig, computed == expected_sig)
+        if hmac.compare_digest(computed, expected_sig):
+            return True
+    return False
 
 
 def _public_base_url() -> str:
