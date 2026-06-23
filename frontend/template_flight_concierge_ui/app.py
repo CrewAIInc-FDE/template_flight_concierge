@@ -15,6 +15,7 @@ app.logger.setLevel(logging.INFO)
 
 CREWAI_ENTERPRISE_URL = os.environ["CREWAI_ENTERPRISE_URL"]
 CREWAI_ENTERPRISE_TOKEN = os.environ["CREWAI_ENTERPRISE_TOKEN"]
+WEBHOOK_TOKEN = os.environ["WEBHOOK_TOKEN"]
 PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "").rstrip("/")
 
 sessions: dict[str, dict] = {}
@@ -115,6 +116,7 @@ def api_start():
                     ],
                     "url": f"{_public_base_url()}/webhook/messages",
                     "realtime": True,
+                    "authentication": {"strategy": "bearer", "token": WEBHOOK_TOKEN},
                 },
             },
             headers={
@@ -237,6 +239,10 @@ def api_feedback(flow_id: str):
 @app.route("/webhook/messages", methods=["POST"])
 def webhook_messages():
     """Receive individual message events from the DispatcherEventBusService."""
+    auth = request.headers.get("Authorization", "")
+    if auth != f"Bearer {WEBHOOK_TOKEN}":
+        return jsonify({"error": "unauthorized"}), 401
+
     payload = request.get_json(force=True)
     app.logger.info("Message webhook: payload=%.200s", json.dumps(payload, default=str))
 
@@ -285,6 +291,10 @@ def webhook_messages():
 @app.route("/webhook/feedback", methods=["POST"])
 def webhook_feedback():
     """Receive human feedback requests from CrewAI Enterprise automation."""
+    app.logger.info(
+        "Feedback webhook headers: %s",
+        dict(request.headers),
+    )
     payload = request.get_json(force=True)
     app.logger.info(
         "Feedback webhook: payload=%.200s", json.dumps(payload, default=str)
