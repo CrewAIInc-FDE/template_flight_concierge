@@ -1,8 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from crewai import Agent
-from get_flight_airports_nearby import GetFlightAirportsNearby
-from get_flights_from_google_flights import GetFlightsFromGoogleFlights
+from flight_concierge_tools import (
+    GetFlightAirportsNearby,
+    GetFlightsFromGoogleFlights,
+)
 
 from template_flight_concierge.tools import (
     QueryLocalAirportsDatabase,
@@ -25,7 +27,7 @@ class FlightConciergeAgent:
             goal=f"""Find the most convenient flight routes and airport options for traveling FDEs,
             considering proximity, accessibility, and travel efficiency in a fluid conversational
             interface that respects the idiom being utilized by the user. You are also always
-            aware of the current date - which is {datetime.now().strftime("%Y-%m-%d")}""".strip(),
+            aware of the current date - which is {datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")}""".strip(),
             backstory="""You are a dedicated and professional travel concierge specializing in
             supporting CrewAI's Field Development Engineers (FDEs) who travel extensively around
             the globe. With years of experience in corporate travel logistics, you excel at
@@ -42,7 +44,7 @@ class FlightConciergeAgent:
                 GetFlightAirportsNearby(),
                 GetFlightsFromGoogleFlights(),
             ],
-            llm="gpt-4.1",
+            llm="gpt-5.6-sol",
         )
 
     def _latest_messages(self, messages: list[Message]):

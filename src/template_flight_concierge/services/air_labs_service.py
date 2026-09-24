@@ -1,9 +1,11 @@
 import json
 from pathlib import Path
 
-from get_flight_airport_codes import GetFlightAirportCodes
-from get_flight_city_codes import GetFlightCityCodes
-from get_flight_country_codes import GetFlightCountryCodes
+from flight_concierge_tools import (
+    GetFlightAirportCodes,
+    GetFlightCityCodes,
+    GetFlightCountryCodes,
+)
 
 
 class AirLabsService:
